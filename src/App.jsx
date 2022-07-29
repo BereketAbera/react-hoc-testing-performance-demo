@@ -1,32 +1,14 @@
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import "./App.css";
+import Users from "./components/Users";
+import withData from "./hoc/withData";
+import withErrorBoundary from "./hoc/withErrorBoundary";
 import { fetchUsers } from "./redux/actions/users";
 
+const UserComponent = withErrorBoundary(withData(Users, fetchUsers, {}));
+
 function App() {
-  const users = useSelector((state) => state.users);
-  const requestStatus = useSelector((state) => state.requestStatus);
-
-  const dispatch = useDispatch();
-
-  console.log(users);
-
-  useEffect(() => {
-    dispatch(fetchUsers({ sort: "true" }));
-  }, []);
-
-  const renderUsers = () => {
-    return users?.values?.map((user) => {
-      return <li>{`${user.first_name} ${user.last_name}`}</li>;
-    });
-  };
-
   return (
     <div className="p-4 mx-auto max-w-lg">
-      {requestStatus === "loading" && (
-        <h1 className="text-red-700">Loading...</h1>
-      )}
-      {requestStatus !== "loading" && <ul> {renderUsers()}</ul>}
+      <UserComponent />
     </div>
   );
 }
